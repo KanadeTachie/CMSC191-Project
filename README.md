@@ -30,7 +30,7 @@ As the title suggests, it uses Tesseract OCR to detect code text, write it in oc
 5. OCR functionality
 
 ## For Local Testing:
-Fork this repo and do the type the following in the console
+Fork this repo and type the following in the console
 ```bash
 pip install pytesseract
 pip install streamlit
