@@ -18,9 +18,11 @@
 # 3. https://pyimagesearch.com/2018/09/17/opencv-ocr-and-text-recognition-with-tesseract/
 
 #Own modifications/code: 
-#1. Integrating streamlit 
-#2. Opening and closing another python file for reading and writing code.
-#3. multithreading for OCR 
+# 1. Integrating streamlit GUI
+# 2. Custom image manipulation and processing settings
+# 3. Opening and closing another python file for reading and writing code.
+# 4. multithreading for OCR
+# 5. OCR functionality
 
 #imports
 import cv2
