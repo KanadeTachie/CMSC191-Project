@@ -1,1 +1,43 @@
-# CMSC191-Project
+# OCR PYTHON CODE RUNNER/INTERPRETER 
+As the title suggests, it uses Tesseract OCR to detect code text, write it in ocr.py, run ocr.py and display the output live.
+
+**Made for CMSC 191 Final Project**
+## Developed by:
+* **King Behimino** [@KanadeTachie](https://github.com/KanadeTachie)
+
+## Topics implemented:
+1. Python + OpenCV image handling
+2. Image manipulation and processing
+3. Image segmentation and contour detection (preprocessing of webcam for segmentation, canny edge for contour detection)
+4. Object tracking and motion analysis (bounding boxes)
+5. OCR (tesseract)
+
+## Lab codes sources:
+1. 2.10
+2. 2.11
+3. 2.12
+
+## sources used for code study and implementation: 
+1. https://www.geeksforgeeks.org/text-detection-and-extraction-using-opencv-and-ocr
+2. https://docs.streamlit.io/develop/quick-reference/cheat-sheet
+3. https://pyimagesearch.com/2018/09/17/opencv-ocr-and-text-recognition-with-tesseract/
+
+## Own modifications/code: 
+1. Integrating streamlit GUI
+2. Custom image manipulation and processing settings
+3. Opening and closing another python file for reading and writing code.
+4. multithreading for OCR
+5. OCR functionality
+
+## For Local Testing:
+Fork this repo and do the type the following in the console
+```bash
+pip install pytesseract
+pip install streamlit
+```
+Aside from the two, Tesseract OCR MUST be installed on the local machine.
+Download the latest Tesseract OCR and install.
+```bash
+https://github.com/tesseract-ocr/tesseract
+```
+MUST add the installation folder to System PATH
