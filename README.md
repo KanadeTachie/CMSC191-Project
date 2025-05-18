@@ -41,3 +41,14 @@ Download the latest Tesseract OCR and install.
 https://github.com/tesseract-ocr/tesseract
 ```
 MUST add the installation folder to System PATH
+
+ **To run the code locally, open a cmd towards the app.py path and type:**
+ ```bash
+streamlit run app.py
+```
+The images on the test images folder are to be saved on a separate device (phone, laptop, etc.) for live webcam testing.
+Custom code text images can be made on another device, but it must not be handwritten.
+
+## Current limitations of this program:
+1. Has the difficulty of detecting handwritten code
+2. Cannot indentify indentations
