@@ -50,5 +50,6 @@ The images on the test images folder are to be saved on a separate device (phone
 Custom code text images can be made on another device, but it must not be handwritten.
 
 ## Current limitations of this program:
-1. Has the difficulty of detecting handwritten code
-2. Cannot indentify indentations
+1. Has the difficulty of detecting handwritten code (as Tesseract OCR is not trained on handwritten code)
+2. Some code with 5 lines or more will be difficult to read
+3. Only reads code printed digitally from Paint

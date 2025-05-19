@@ -18,11 +18,11 @@
 # 3. https://pyimagesearch.com/2018/09/17/opencv-ocr-and-text-recognition-with-tesseract/
 
 #Own modifications/code: 
-# 1. Integrating streamlit GUI
-# 2. Custom image manipulation and processing settings
-# 3. Opening and closing another python file for reading and writing code.
-# 4. multithreading for OCR
-# 5. OCR functionality
+# Integrating streamlit GUI
+# Custom image manipulation and processing settings
+# Opening and closing another python file for reading and writing code.
+# multithreading for OCR
+# OCR functionality
 
 #imports
 import cv2
@@ -53,7 +53,7 @@ if col_btn1.button("Start"):
 if col_btn2.button("Stop"):
     st.session_state.stopped = True
 
-cam1, cam2 = st.columns((3, 3))
+cam1, cam2 = st.columns((1, 1))
 video_1 = cam1.empty()
 video_2 = cam2.empty()
 text_col1, text_col2 = st.columns(2)
@@ -90,10 +90,95 @@ def process_ocr_text(text):
     st.session_state.last_output = execution_result
     processing_text = False
 
+def reconstruct_code_from_ocr(data):
+    # Group text by approximate line position
+    # this is for finding the indents in the code
+    lines = {}
+    for i in range(len(data['level'])):
+        conf = int(data['conf'][i])
+        if conf > 40: 
+            top = data['top'][i]
+            word = data['text'][i].strip()
+            left = data['left'][i]
+            if word:
+                found_line = False
+                for key in lines:
+                    if abs(key - top) <= 10: 
+                        lines[key].append((left, word))
+                        found_line = True
+                        break
+                if not found_line:
+                    lines[top] = [(left, word)]
+
+    # Sort lines by vertical position and reconstruct code
+    code_lines = []
+    line_keys = sorted(lines.keys())
+    
+    # Calculate baseline indentation (leftmost text position)
+    all_lefts = []
+    for key in line_keys:
+        line_words = lines[key]
+        if line_words:
+            # Get the leftmost position of each line
+            leftmost = min(left for left, _ in line_words)
+            all_lefts.append((key, leftmost))
+    
+    # Sort lines by their vertical position
+    if all_lefts:
+        # Find the most common left positions to identify indentation levels
+        left_positions = [pos for _, pos in all_lefts]
+        left_positions.sort()
+        
+        # Identify distinct indentation levels
+        indent_levels = []
+        for pos in left_positions:
+            # Check if this position represents a new indent level
+            is_new_level = True
+            for known_pos in indent_levels:
+                if abs(pos - known_pos) < 15:  # If within 15 pixels, consider same level
+                    is_new_level = False
+                    break
+            if is_new_level:
+                indent_levels.append(pos)
+        
+        indent_levels.sort()  # Sort indentation levels from left to right
+    else:
+        indent_levels = [0]
+    
+    for key in line_keys:
+        # Sort words in the line by horizontal position
+        line = sorted(lines[key])
+        
+        if not line:
+            continue
+            
+        # Get left position of first word in line
+        first_word_left = line[0][0]
+        
+        # Determine indentation level based on position
+        indent_level = 0
+        for i, level_pos in enumerate(indent_levels):
+            if abs(first_word_left - level_pos) < 15:
+                indent_level = i
+                break
+            elif first_word_left > level_pos:
+                # If position is to the right of this level but not close enough
+                # to match exactly, it might be the next level
+                indent_level = i + 1
+        
+        # Cap indentation at 2 levels
+        indent_level = min(indent_level, 2)
+        line_text = " ".join(word for _, word in line)
+        # Add appropriate indentation and append to code lines
+        code_lines.append("    " * indent_level + line_text)
+    
+    # Join all lines with newlines
+    return "\n".join(code_lines)
+
 ##-main--------------------------------------------------------------------------------------
 cap = cv2.VideoCapture(0)
 frame_count = 0
-ocr_interval = 15 #process every 15 frames
+ocr_interval = 5 #process every 15 frames
 cap.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
 
@@ -110,7 +195,9 @@ while not st.session_state.stopped:
         kernel = np.ones((3,3), np.uint8)
         dilation = cv2.dilate(canny, kernel, iterations=1)
 
-        extractedText = pytesseract.image_to_string(dilation)
+        data = pytesseract.image_to_data(dilation, output_type=pytesseract.Output.DICT)
+        extractedText = reconstruct_code_from_ocr(data)
+        
         # print("Extracted Text:\n")
         # print(extractedText)
 
@@ -122,17 +209,17 @@ while not st.session_state.stopped:
             thread.daemon = True
             thread.start()
 
-            data = pytesseract.image_to_data(dilation, output_type=pytesseract.Output.DICT)
             n_boxes = len(data['level'])
 
             # Draw bounding boxes on the frame
+            data = pytesseract.image_to_data(dilation, output_type=pytesseract.Output.DICT)
             for i in range(n_boxes):
                 x, y, w, h = data['left'][i], data['top'][i], data['width'][i], data['height'][i]
                 conf = int(data['conf'][i])
-                if conf > 40:  # confidence filter
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                if conf > 20:  # confidence filter
+                    cv2.rectangle(display_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
-        # Update Streamlit side panel for text and output
+        # Update Streamlit GUI
         text_display.code(last_processed_text or "No code yet", language="python")
         execution_display.code(execution_result or "No output yet", language="text")
 
@@ -151,5 +238,5 @@ while not st.session_state.stopped:
             )
     frame_count += 1
 
-    video_1.image(display_frame, channels="RGB", width=1200)
-    video_2.image(dilation, channels="RGB", width=1200)
+    video_1.image(display_frame, channels="BGR", use_column_width=True)
+    video_2.image(dilation, channels="RGB", use_column_width=True)
