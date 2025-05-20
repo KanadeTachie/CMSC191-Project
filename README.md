@@ -1,4 +1,5 @@
-# OCR PYTHON CODE RUNNER/INTERPRETER 
+# PhotoPy
+An OCR Python Code Runner/Interpreter 
 As the title suggests, it uses Tesseract OCR to detect code text, write it in ocr.py, run ocr.py and display the output live.
 
 **Made for CMSC 191 Final Project**
