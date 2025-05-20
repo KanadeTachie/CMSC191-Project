@@ -1,6 +1,5 @@
 # PhotoPy
-An OCR Python Code Runner/Interpreter 
-As the title suggests, it uses Tesseract OCR to detect code text, write it in ocr.py, run ocr.py and display the output live.
+An OCR Python Code Runner/Interpreter. Inspired from Photomath mobile application, it uses Tesseract OCR to detect printed code and display the output live.
 
 **Made for CMSC 191 Final Project**
 ## Developed by:
@@ -13,22 +12,17 @@ As the title suggests, it uses Tesseract OCR to detect code text, write it in oc
 4. Object tracking and motion analysis (bounding boxes)
 5. OCR (tesseract)
 
-## Lab codes sources:
-1. 2.10
-2. 2.11
-3. 2.12
+## Lab resources used:
+1. **2.10** - Thresholding, Binarization & Adaptive Thresholding
+2. **2.11** - Dilation, Erosion, Opening and Closing
+3. **2.12** - Edge Detection & Image Gradients
+4. **9.3** - Automatic Number-Plate Recognition
 
-## sources used for code study and implementation: 
+
+## Sources used for code study and implementation: 
 1. https://www.geeksforgeeks.org/text-detection-and-extraction-using-opencv-and-ocr
 2. https://docs.streamlit.io/develop/quick-reference/cheat-sheet
 3. https://pyimagesearch.com/2018/09/17/opencv-ocr-and-text-recognition-with-tesseract/
-
-## Own modifications/code: 
-1. Integrating streamlit GUI
-2. Custom image manipulation and processing settings
-3. Opening and closing another python file for reading and writing code.
-4. multithreading for OCR
-5. OCR functionality
 
 ## For Local Testing:
 Fork this repo and type the following in the console
